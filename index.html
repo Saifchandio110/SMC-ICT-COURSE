@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🐋 SMC / ICT — Pro Academy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #0b0f1a;
+      --bg-panel: #111827;
+      --bg-card: #1a2538;
+      --border-glow: #2a3f66;
+      --text-primary: #f0f4ff;
+      --text-secondary: #9aaec9;
+      --accent-cyan: #00d4ff;
+      --accent-gold: #fbbf24;
+      --accent-rose: #f472b6;
+      --accent-violet: #818cf8;
+      --accent-green: #34d399;
+      --shadow-card: 0 12px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-panel); }
+    ::-webkit-scrollbar-thumb { background: var(--accent-cyan); border-radius: 12px; }
+
+    .navbar {
+      background: rgba(17, 24, 39, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo .highlight {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .logo span {
+      font-size: 30px;
+      -webkit-text-fill-color: initial;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 40px;
+    }
+    .nav-tabs button {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 22px;
+      border-radius: 30px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.25s;
+      letter-spacing: 0.2px;
+    }
+    .nav-tabs button:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .nav-tabs button.active {
+      background: var(--accent-cyan);
+      color: #0b0f1a;
+      box-shadow: 0 4px 16px rgba(0, 212, 255, 0.25);
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 28px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    @media (max-width: 960px) {
+      .dashboard { grid-template-columns: 1fr; }
+    }
+
+    .sidebar {
+      background: var(--bg-panel);
+      border-radius: 32px;
+      padding: 28px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(4px);
+      height: fit-content;
+      max-height: calc(100vh - 140px);
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .sidebar-header h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .sidebar-header .badge-progress {
+      font-size: 12px;
+      background: rgba(0, 212, 255, 0.12);
+      padding: 4px 12px;
+      border-radius: 40px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .topic-item {
+      padding: 14px 16px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+    .topic-item:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: rgba(255, 255, 255, 0.04);
+    }
+    .topic-item.active {
+      background: rgba(0, 212, 255, 0.06);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.02);
+    }
+    .topic-item .icon { font-size: 22px; }
+    .topic-item .label {
+      font-weight: 500;
+      font-size: 15px;
+    }
+    .topic-item .tag {
+      margin-left: auto;
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 10px;
+      border-radius: 40px;
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--accent-gold);
+    }
+    .topic-item .tag.core { background: rgba(52, 211, 153, 0.12); color: var(--accent-green); }
+    .topic-item .tag.pro { background: rgba(244, 114, 182, 0.12); color: var(--accent-rose); }
+
+    .progress-wrapper {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .progress-wrapper .meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .track .fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-violet));
+      border-radius: 20px;
+      transition: width 0.5s ease;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border-radius: 32px;
+      padding: 32px 36px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow-card);
+      min-height: 500px;
+    }
+
+    .panel .breadcrumb {
+      font-size: 13px;
+      color: var(--text-secondary);
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel .breadcrumb span { color: var(--accent-cyan); }
+
+    .panel h2 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .panel .subtitle {
+      color: var(--text-secondary);
+      font-size: 16px;
+      margin-bottom: 28px;
+      border-left: 3px solid var(--accent-cyan);
+      padding-left: 16px;
+    }
+
+    .section { display: none; animation: fadeUp 0.35s ease; }
+    .section.active { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 18px;
+      margin: 20px 0 24px;
+    }
+    .card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 22px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      transition: 0.25s;
+      backdrop-filter: blur(4px);
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 12px 28px rgba(0, 212, 255, 0.04);
+    }
+    .card .emoji { font-size: 30px; }
+    .card h4 { font-size: 17px; margin: 10px 0 6px; font-weight: 600; }
+    .card p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+
+    .method-card {
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 22px 24px;
+      margin-bottom: 16px;
+      border-left: 5px solid var(--accent-cyan);
+      transition: 0.25s;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .method-card:hover {
+      border-left-width: 8px;
+      transform: translateX(6px);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+    .method-card .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .method-card .head h4 { font-size: 18px; font-weight: 600; }
+    .method-card .pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 16px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pill.entry { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); }
+    .pill.exit { background: rgba(244, 114, 182, 0.15); color: var(--accent-rose); }
+    .pill.setup { background: rgba(0, 212, 255, 0.12); color: var(--accent-cyan); }
+    .pill.risk { background: rgba(251, 191, 36, 0.12); color: var(--accent-gold); }
+
+    .method-card p { color: var(--text-secondary); font-size: 14px; margin: 8px 0 10px; line-height: 1.6; }
+    .method-card .steps {
+      padding-left: 20px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 2;
+    }
+    .method-card .steps li::marker { color: var(--accent-cyan); }
+
+    .coach-box {
+      background: rgba(0, 212, 255, 0.04);
+      border-radius: 20px;
+      padding: 18px 24px;
+      border-left: 5px solid var(--accent-cyan);
+      margin: 20px 0;
+      backdrop-filter: blur(2px);
+    }
+    .coach-box .label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    .coach-box p { color: var(--text-secondary); font-size: 15px; margin-top: 4px; line-height: 1.6; }
+
+    .checklist {
+      margin-top: 20px;
+      background: var(--bg-card);
+      border-radius: 20px;
+      padding: 20px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .checklist h4 { margin-bottom: 10px; font-weight: 600; }
+    .checklist ul {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+    }
+    .checklist ul li::before { content: "✅ "; color: var(--accent-green); }
+    .checklist ul li { color: var(--text-secondary); font-size: 14px; padding: 4px 0; }
+
+    .lesson-text {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.9;
+      margin: 16px 0;
+    }
+    .lesson-text strong { color: var(--text-primary); }
+    .lesson-text .highlight { color: var(--accent-gold); }
+
+    @media (max-width: 768px) {
+      body { padding: 12px; }
+      .navbar { flex-direction: column; align-items: stretch; padding: 16px; }
+      .nav-tabs { justify-content: center; flex-wrap: wrap; }
+      .nav-tabs button { padding: 8px 16px; font-size: 13px; }
+      .panel { padding: 22px; }
+      .panel h2 { font-size: 26px; }
+      .checklist ul { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .topic-item { padding: 12px 14px; }
+    }
+
+    .mt-16 { margin-top: 16px; }
+    .mb-8 { margin-bottom: 8px; }
+    .divider {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      margin: 24px 0;
+    }
+    .highlight { color: var(--accent-gold); font-weight: 600; }
+    .text-secondary { color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">
+      <span>🐋</span>
+      <span class="highlight">SmartMoney</span><span style="-webkit-text-fill-color:var(--text-primary);"></span>
+    </div>
+    <div class="nav-tabs">
+      <button class="active" data-tab="learn">📚 Learn</button>
+      <button data-tab="methods">📊 Methods</button>
+      <button data-tab="coach">🧠 Coach</button>
+    </div>
+  </nav>
+
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h3>📖 SMC / ICT</h3>
+        <span class="badge-progress" id="progressPct">0%</span>
+      </div>
+      <div id="topicList"></div>
+      <div class="progress-wrapper">
+        <div class="meta">
+          <span>Mastery</span>
+          <span id="progressLabel">0 / 6</span>
+        </div>
+        <div class="track">
+          <div class="fill" id="progressFill" style="width:0%;"></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="panel">
+      <div id="tab-learn" class="section active">
+        <div class="breadcrumb">📚 Learning / <span id="topicName">Market Structure</span></div>
+        <div id="lessonContent"></div>
+      </div>
+
+      <div id="tab-methods" class="section">
+        <h2>📊 Trading Methods</h2>
+        <div class="subtitle">SMC & ICT strategies — clear, actionable, and proven</div>
+        <div id="methodsContainer"></div>
+      </div>
+
+      <div id="tab-coach" class="section">
+        <h2>🧠 Smart Money Coach</h2>
+        <div class="subtitle">Your daily mentor for trading psychology & discipline</div>
+        <div class="card-grid">
+          <div class="card">
+            <div class="emoji">🎯</div>
+            <h4>Wait for Confirmation</h4>
+            <p>Never enter without a <span class="highlight">Confirmation Block</span> or <span class="highlight">Liquidity Sweep</span>.</p>
+          </div>
+          <div class="card">
+            <div class="emoji">🕵️</div>
+            <h4>Think Like an Institution</h4>
+            <p>Where would <span class="highlight">Smart Money</span> place orders? Above highs / below lows.</p>
+          </div>
+          <div class="card">
+            <div class="emoji">⛔</div>
+            <h4>Risk First</h4>
+            <p>Never risk more than <span class="highlight">1-2%</span> per trade. Protect your capital.</p>
+          </div>
+          <div class="card">
+            <div class="emoji">🧘</div>
+            <h4>Patience = Profit</h4>
+            <p>Smart Money waits for <span class="highlight">liquidity grabs</span> and <span class="highlight">FVG fills</span>.</p>
+          </div>
+        </div>
+        <div class="coach-box" style="border-left-color:var(--accent-gold);">
+          <div class="label">🔥 Today's Wisdom</div>
+          <p id="dailyWisdom">"The market is a tool, not a battle. Trade the setup, not your emotions."</p>
+        </div>
+        <div class="checklist">
+          <h4>📋 Your SMC Checklist</h4>
+          <ul>
+            <li>Market Structure (BOS / CHoCH)</li>
+            <li>Order Block or FVG located</li>
+            <li>Waited for Liquidity Sweep</li>
+            <li>Entry with confirmation</li>
+            <li>Stop Loss beyond structure</li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ================================================================
+    //  DATA — TOPICS with DETAILED PARAGRAPHS
+    // ================================================================
+    const topics = [{
+      id: 'market-structure',
+      icon: '🗺️',
+      label: 'Market Structure',
+      tag: 'core',
+      content: `
+        <h2>🗺️ Market Structure — The Map</h2>
+        <div class="subtitle">Read the trend like a professional.</div>
+
+        <div class="card-grid">
+          <div class="card"><div class="emoji">📈</div><h4>BOS</h4><p>Break of Structure — trend <strong>continues</strong>.</p></div>
+          <div class="card"><div class="emoji">🔄</div><h4>CHoCH</h4><p>Change of Character — trend <strong>reverses</strong>.</p></div>
+          <div class="card"><div class="emoji">📊</div><h4>Range</h4><p>Consolidation — Smart Money accumulating.</p></div>
+        </div>
+
+        <div class="lesson-text">
+          <p><strong>Market Structure</strong> is the foundation of Smart Money Concepts (SMC). It's the visual representation of price movement — the "map" that tells you where the market has been, where it's going, and most importantly, who's in control.</p>
+          <br />
+          <p><strong>🔹 Break of Structure (BOS)</strong> occurs when price breaks a previous swing high in an uptrend or a swing low in a downtrend. This signals that the current trend is <strong>continuing</strong> with strength. A BOS tells you that institutional money is still driving the market in that direction.</p>
+          <br />
+          <p><strong>🔹 Change of Character (CHoCH)</strong> happens when price breaks a structural level but <strong>fails to follow through</strong>. For example, in an uptrend, price breaks a previous high but quickly reverses and breaks a low. This is a <strong>warning sign</strong> that Smart Money might be preparing to reverse the trend. CHoCH is your early alert that the market is shifting.</p>
+          <br />
+          <p><strong>🔹 Ranges / Consolidation</strong> occur when price moves sideways between support and resistance. In SMC, this is often <strong>Smart Money accumulation</strong> — institutions are quietly building large positions before the next big move. Patience during ranges often pays off with explosive breakouts.</p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> Always identify the <strong>higher time frame structure</strong> first. The daily and 4-hour charts show you the "big picture" — then drill down to lower time frames for entry precision.</p>
+        </div>
+
+        <div class="coach-box">
+          <div class="label">🧠 Why it matters</div>
+          <p>If you don't know the <strong>structure</strong>, you're trading blind. Every high-probability SMC setup starts with structure analysis. The trend is your friend — but only if you can correctly identify it.</p>
+        </div>
+
+        <hr class="divider" />
+        <p class="text-secondary"><span class="highlight">Quick check:</span> Price breaks a high and keeps going = <strong>BOS</strong> (bullish). Fails to hold = <strong>CHoCH</strong> — a warning. Always confirm with volume or price action.</p>
+      `
+    }, {
+      id: 'liquidity',
+      icon: '🎣',
+      label: 'Liquidity & Traps',
+      tag: 'core',
+      content: `
+        <h2>🎣 Liquidity — Where the Trap Hides</h2>
+        <div class="subtitle">Smart Money hunts your stop-loss. Here's how.</div>
+
+        <div class="card-grid">
+          <div class="card"><div class="emoji">🔺</div><h4>Buy-Side</h4><p>Stops above resistance — swept to sell.</p></div>
+          <div class="card"><div class="emoji">🔻</div><h4>Sell-Side</h4><p>Stops below support — swept to buy.</p></div>
+        </div>
+
+        <div class="lesson-text">
+          <p><strong>Liquidity</strong> in SMC refers to the pool of stop-loss and limit orders sitting above highs and below lows. Retail traders instinctively place their stops just beyond obvious support/resistance levels — and <strong>Smart Money knows exactly where they are</strong>.</p>
+          <br />
+          <p><strong>🔹 Buy-Side Liquidity</strong> is the accumulation of buy stops sitting above swing highs. Institutions will often push price up to <strong>sweep</strong> these stops, triggering retail buy orders. Once those orders are filled, Smart Money reverses the price to the downside, trapping late buyers. This is why you often see price break a high, then immediately collapse.</p>
+          <br />
+          <p><strong>🔹 Sell-Side Liquidity</strong> is the pool of sell stops resting below swing lows. Smart Money pushes price down to trigger these stops, then reverses upward, catching short-sellers off guard. These <strong>liquidity sweeps</strong> are the bread and butter of institutional trading.</p>
+          <br />
+          <p><strong>🔹 The Liquidity Trap</strong> is the moment when price aggressively moves into a liquidity zone, triggers the stops, and <strong>immediately reverses</strong>. This is often accompanied by a large wick or spike — a clear sign that Smart Money has collected their liquidity and is now moving price in their intended direction.</p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> <strong>Never place your stop-loss at the obvious level</strong> where everyone else places theirs. Instead, wait for the liquidity sweep to occur, then enter in the direction of the reversal. This is called "trading the sweep" — and it's one of the most powerful SMC strategies.</p>
+        </div>
+
+        <div class="coach-box" style="border-left-color:var(--accent-rose);">
+          <div class="label">⚠️ Common Mistake</div>
+          <p>Placing stops <strong>right above/below</strong> obvious levels? That's exactly where institutions will hunt. Move your stop beyond the next structural level, or better yet — wait for the sweep before entering.</p>
+        </div>
+
+        <p class="mt-16 text-secondary"><span class="highlight">Remember:</span> Smart Money doesn't move price to help you — they move it to <strong>hunt liquidity</strong>. Understand this, and you'll stop being the prey.</p>
+      `
+    }, {
+      id: 'order-blocks',
+      icon: '👣',
+      label: 'Order Blocks',
+      tag: 'core',
+      content: `
+        <h2>👣 Order Blocks — The Footprints</h2>
+        <div class="subtitle">The last candle before a big move — institutions left their mark.</div>
+
+        <div class="card-grid">
+          <div class="card"><div class="emoji">🟢</div><h4>Bullish OB</h4><p>Last <strong>bearish</strong> candle before price shot up.</p></div>
+          <div class="card"><div class="emoji">🔴</div><h4>Bearish OB</h4><p>Last <strong>bullish</strong> candle before price dumped.</p></div>
+        </div>
+
+        <div class="lesson-text">
+          <p><strong>Order Blocks (OBs)</strong> are one of the most powerful concepts in SMC. An Order Block is the <strong>last opposing candle</strong> before a strong directional move. It represents a zone where institutional orders were placed — a "footprint" left behind by Smart Money.</p>
+          <br />
+          <p><strong>🔹 Bullish Order Block</strong> is the <strong>last bearish candle</strong> before price made a significant move upward. This means that institutions accumulated long positions at this level. When price later <strong>retests</strong> this zone, it often acts as strong support, as Smart Money is likely to defend their positions.</p>
+          <br />
+          <p><strong>🔹 Bearish Order Block</strong> is the <strong>last bullish candle</strong> before price dropped sharply. This is where institutions placed short orders. When price returns to this area, it often becomes a resistance zone where Smart Money may re-enter short positions.</p>
+          <br />
+          <p><strong>🔹 How to trade Order Blocks:</strong> The key is to wait for a <strong>retest</strong> of the OB zone. Look for confirmation signals like pin bars, engulfing patterns, or FVG fills. The higher the time frame, the more significant the Order Block. A <strong>daily or 4-hour OB</strong> is far more powerful than a 5-minute one.</p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> The most reliable OBs are those that have been <strong>mitigated</strong> — meaning price has already touched them at least once. Multiple touches weaken the OB, so focus on the <strong>first retest</strong> for the highest probability trades.</p>
+        </div>
+
+        <div class="coach-box">
+          <div class="label">🧠 How to Trade It</div>
+          <p>Wait for price to <span class="highlight">retest the Order Block</span> and look for <strong>confirmation</strong> (pin bar, engulfing, or FVG fill). Enter on the confirmation, place your stop-loss <strong>beyond the OB</strong>, and target the next structural level.</p>
+        </div>
+      `
+    }, {
+      id: 'fvg',
+      icon: '🕳️',
+      label: 'Fair Value Gaps',
+      tag: 'core',
+      content: `
+        <h2>🕳️ Fair Value Gaps (FVG)</h2>
+        <div class="subtitle">The "void" left when price moves too fast — acts like a magnet.</div>
+
+        <div class="card-grid">
+          <div class="card"><div class="emoji">⬇️</div><h4>Bullish FVG</h4><p>Gap between candle 1 low & candle 3 high.</p></div>
+          <div class="card"><div class="emoji">⬆️</div><h4>Bearish FVG</h4><p>Gap between candle 1 high & candle 3 low.</p></div>
+        </div>
+
+        <div class="lesson-text">
+          <p><strong>Fair Value Gaps (FVG)</strong> — also known as "imbalances" — are zones where price moved so aggressively that <strong>no trading occurred</strong> in that area. The market left a "gap" or "void" that often acts as a magnet for future price action.</p>
+          <br />
+          <p><strong>🔹 Bullish FVG</strong> occurs when price shoots up rapidly. The gap is defined as the space between the <strong>low of the first candle</strong> and the <strong>high of the third candle</strong>. This area represents an inefficiency — price moved too quickly and left unfilled orders behind. Price tends to <strong>pull back into this zone</strong> to fill those orders before continuing upward.</p>
+          <br />
+          <p><strong>🔹 Bearish FVG</strong> happens when price drops sharply. The gap is the space between the <strong>high of the first candle</strong> and the <strong>low of the third candle</strong>. Price often retraces into this zone, filling the imbalance, before resuming the downward trend.</p>
+          <br />
+          <p><strong>🔹 How to trade FVGs:</strong> The classic SMC approach is to wait for price to <strong>fill the FVG</strong> (enter the gap) and then look for a <strong>rejection</strong> or <strong>confirmation</strong> in the direction of the original trend. FVGs that align with Order Blocks create <strong>confluence zones</strong> — these are high-probability areas where Smart Money is likely to act.</p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> Not all FVGs are created equal. The most powerful ones are those created by <strong>impulsive moves</strong> that break through major structural levels. The higher the time frame, the more significant the FVG. A <strong>daily or weekly FVG</strong> is a massive magnet that price will likely revisit.</p>
+        </div>
+
+        <div class="coach-box" style="border-left-color:var(--accent-gold);">
+          <div class="label">💡 Strategy</div>
+          <p>Look for <span class="highlight">FVG + Order Block confluence</span>. This is a high-probability zone. Enter when price <strong>fills the gap</strong> and shows rejection. Always set your stop-loss <strong>outside the FVG</strong> to avoid being stopped out by noise.</p>
+        </div>
+      `
+    }, {
+      id: 'entry-models',
+      icon: '🎯',
+      label: 'Entry Models',
+      tag: 'pro',
+      content: `
+        <h2>🎯 SMC Entry Models</h2>
+        <div class="subtitle">When to pull the trigger — precision matters.</div>
+
+        <div class="lesson-text">
+          <p><strong>Entry Models</strong> are the specific patterns and techniques that signal when to enter a trade. In SMC, we don't just guess — we wait for <strong>confirmation</strong> that Smart Money is about to move price in our intended direction.</p>
+          <br />
+          <p><strong>🔹 MSS (Market Structure Shift)</strong> — This is a <strong>confirmation model</strong> that occurs when price breaks a structural level (BOS or CHoCH) and then <strong>returns to retest</strong> that level. The retest acts as confirmation that the trend is shifting. Enter on the retest with a stop-loss beyond the structural level.</p>
+          <br />
+          <p><strong>🔹 FVG Fill + Retest</strong> — Price enters a Fair Value Gap, fills the imbalance, and then <strong>retests the edge</strong> of the FVG. This retest is your confirmation. Enter in the direction of the original trend. This model combines the power of FVGs with structural retests.</p>
+          <br />
+          <p><strong>🔹 Order Block + Sweep</strong> — Price sweeps a liquidity level (takes out stops), then <strong>enters an Order Block</strong> zone and shows rejection. This is a classic Smart Money trap. Enter on the rejection candle with a stop-loss beyond the sweep.</p>
+          <br />
+          <p><strong>🔹 CHoCH + Breakout</strong> — A Change of Character occurs, and then price <strong>breaks and holds</strong> a structural level. Enter on the breakout or on a retest of the broken level. This works best in strong trending markets.</p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> The <strong>most powerful entries</strong> combine <strong>two or more</strong> of these models. For example: FVG + OB confluence, or Liquidity Sweep + CHoCH. Multiple confirmations = higher probability.</p>
+        </div>
+
+        <div class="coach-box">
+          <div class="label">🚀 Pro Tip</div>
+          <p>Combine <strong>at least two</strong> models for high-conviction trades. Never enter on just one signal. And always — <strong>wait for the candle to close</strong> before entering. Don't jump in early.</p>
+        </div>
+      `
+    }, {
+      id: 'risk-management',
+      icon: '🛡️',
+      label: 'Risk Management',
+      tag: 'core',
+      content: `
+        <h2>🛡️ Risk Like a Pro</h2>
+        <div class="subtitle">Survive to thrive — protect your capital at all costs.</div>
+
+        <div class="card-grid">
+          <div class="card"><div class="emoji">📉</div><h4>Risk 1-2%</h4><p>Never risk more than 1-2% per trade.</p></div>
+          <div class="card"><div class="emoji">📐</div><h4>R:R 1:2+</h4><p>Target at least 2x your risk.</p></div>
+          <div class="card"><div class="emoji">⏳</div><h4>Patience > FOMO</h4><p>Wait for your setup — there's always another trade.</p></div>
+        </div>
+
+        <div class="lesson-text">
+          <p><strong>Risk Management</strong> is the difference between traders who survive and those who blow up. In SMC, we treat risk management as a <strong>non-negotiable discipline</strong> — not an afterthought.</p>
+          <br />
+          <p><strong>🔹 Risk 1-2% Per Trade</strong> — This is the golden rule of trading. Never risk more than 1-2% of your total account on any single trade. This means if you have a $10,000 account, your maximum loss per trade should be between $100 and $200. This ensures that even a <strong>series of losses</strong> won't wipe you out.</p>
+          <br />
+          <p><strong>🔹 Risk:Reward Ratio (1:2+)</strong> — For every dollar you risk, you should aim to make at least <strong>two dollars</strong>. This means if your stop-loss is 50 pips, your take-profit should be at least 100 pips. A positive risk-reward ratio allows you to <strong>be wrong 50% of the time</strong> and still be profitable.</p>
+          <br />
+          <p><strong>🔹 Position Sizing</strong> — Your position size should be calculated based on your stop-loss distance. If your stop-loss is wider, you take a smaller position. If it's tighter, you can take a larger position. The goal is to <strong>keep your dollar risk consistent</strong> — not your lot size.</p>
+          <br />
+          <p><strong>🔹 Patience Over FOMO</strong> — The <strong>biggest risk</strong> in trading is not losing money on a bad trade — it's <strong>taking a bad trade</strong> because you're afraid of missing out. Smart Money waits for their setups. They don't chase price. <strong>There is always another trade.</strong></p>
+          <br />
+          <p><span class="highlight">💡 Pro Tip:</span> Keep a <strong>trading journal</strong>. Track every trade — entry, exit, reason, and emotion. Review your trades weekly. The best risk management is <strong>self-awareness</strong> and continuous improvement.</p>
+        </div>
+
+        <div class="coach-box" style="border-left-color:var(--accent-rose);">
+          <div class="label">🚨 Golden Rule</div>
+          <p><span class="highlight">"Plan the trade, trade the plan."</span> Never move your stop-loss wider. If it hits, it hits — accept it and move to the next setup. <strong>Discipline over emotion.</strong></p>
+        </div>
+      `
+    }];
+
+    // ================================================================
+    //  DATA — METHODS
+    // ================================================================
+    const methods = [{
+      name: '📈 Bullish FVG + OB Retest',
+      type: 'setup',
+      description: 'Price creates a bullish FVG (gap up) and later retests the Order Block that preceded it. Enter on a bullish rejection candle.',
+      steps: [
+        'Identify a bullish Order Block (last bearish candle before a strong move up).',
+        'Wait for price to create a FVG above it.',
+        'Let price pull back and fill the FVG, retesting the OB zone.',
+        'Enter on a bullish confirmation candle (engulfing, hammer, or MSS).',
+        'Set stop-loss below the OB. Target the next structural high.'
+      ]
+    }, {
+      name: '📉 Bearish FVG + OB Retest',
+      type: 'setup',
+      description: 'Price creates a bearish FVG (gap down) and later retests the Order Block that started the drop. Enter on bearish rejection.',
+      steps: [
+        'Identify a bearish Order Block (last bullish candle before a strong drop).',
+        'Wait for price to create a FVG below it.',
+        'Let price pull up to fill the FVG and retest the OB.',
+        'Enter on a bearish confirmation candle (shooting star, engulfing, or MSS).',
+        'Stop-loss above the OB. Target the next structural low.'
+      ]
+    }, {
+      name: '🎯 Liquidity Sweep + CHoCH Entry',
+      type: 'entry',
+      description: 'Price sweeps a high (buy-side liquidity) then makes a CHoCH (Change of Character) to the downside. Enter on the break of structure.',
+      steps: [
+        'Identify a recent swing high where retail stops are likely.',
+        'Wait for price to sweep that high (liquidity grab).',
+        'Look for a CHoCH — a break of a previous low after the sweep.',
+        'Enter on the break of the CHoCH level (or retest).',
+        'Stop-loss above the swept high. Target the next low.'
+      ]
+    }, {
+      name: '⏳ Order Flow / Volume Imbalance',
+      type: 'exit',
+      description: 'When price enters a high-volume area (POC) or an imbalance zone, it often reacts. Use these zones to take profits or trail stops.',
+      steps: [
+        'Identify a volume POC (Point of Control) or a gap zone.',
+        'If price reaches a high-volume node, expect a reaction.',
+        'Take partial profits or trail your stop to lock gains.',
+        'If price breaks through volume, it may continue — adjust accordingly.'
+      ]
+    }, {
+      name: '🛡️ Risk-First Scaling',
+      type: 'risk',
+      description: 'Enter with a small position, add on confirmation, and scale out at key levels. This preserves capital while maximizing upside.',
+      steps: [
+        'Enter with 50% of your intended position at the initial signal.',
+        'Add 25% if price moves in your favor and creates a new structure.',
+        'Add the final 25% after a liquidity sweep or FVG fill.',
+        'Take profits at 1:1, 1:2, and 1:3 risk-reward levels.',
+        'Move stop to breakeven after the first target is hit.'
+      ]
+    }];
+
+    // ================================================================
+    //  STATE
+    // ================================================================
+    let currentTopicId = 'market-structure';
+    let currentTab = 'learn';
+
+    // ================================================================
+    //  RENDER FUNCTIONS
+    // ================================================================
+
+    function renderSidebar() {
+      const container = document.getElementById('topicList');
+      container.innerHTML = topics.map(t => `
+        <div class="topic-item ${t.id === currentTopicId ? 'active' : ''}" data-id="${t.id}">
+          <span class="icon">${t.icon}</span>
+          <span class="label">${t.label}</span>
+          <span class="tag ${t.tag}">${t.tag}</span>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.topic-item').forEach(el => {
+        el.addEventListener('click', () => {
+          currentTopicId = el.dataset.id;
+          switchTab('learn');
+          renderSidebar();
+          renderLesson();
+        });
+      });
+
+      const idx = topics.findIndex(t => t.id === currentTopicId);
+      const pct = Math.round(((idx + 1) / topics.length) * 100);
+      document.getElementById('progressPct').textContent = pct + '%';
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = `${idx + 1} / ${topics.length}`;
+    }
+
+    function renderLesson() {
+      const topic = topics.find(t => t.id === currentTopicId);
+      if (!topic) return;
+      document.getElementById('topicName').textContent = topic.label;
+      document.getElementById('lessonContent').innerHTML = topic.content;
+    }
+
+    function renderMethods() {
+      const container = document.getElementById('methodsContainer');
+      container.innerHTML = methods.map(m => `
+        <div class="method-card">
+          <div class="head">
+            <h4>${m.name}</h4>
+            <span class="pill ${m.type}">${m.type}</span>
+          </div>
+          <p>${m.description}</p>
+          <ol class="steps">
+            ${m.steps.map(s => `<li>${s}</li>`).join('')}
+          </ol>
+        </div>
+      `).join('');
+    }
+
+    function renderCoach() {
+      const wisdom = [
+        '"The market is a tool, not a battle. Trade the setup, not your emotions."',
+        '"Smart Money waits for the crowd to panic before they act."',
+        '"Your stop-loss is your insurance. Never trade without it."',
+        '"A broken structure is a new opportunity. Adapt."',
+        '"Patience is the edge. The market rewards those who wait."'
+      ];
+      document.getElementById('dailyWisdom').textContent = wisdom[Math.floor(Math.random() * wisdom.length)];
+    }
+
+    // ================================================================
+    //  TAB SWITCHING
+    // ================================================================
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+      document.getElementById(`tab-${tab}`).classList.add('active');
+
+      document.querySelectorAll('.nav-tabs button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+
+      if (tab === 'learn') { renderSidebar(); renderLesson(); }
+      else if (tab === 'methods') renderMethods();
+      else if (tab === 'coach') renderCoach();
+    }
+
+    // ================================================================
+    //  EVENT BINDINGS & INIT
+    // ================================================================
+    document.querySelectorAll('.nav-tabs button').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    switchTab('learn');
+  </script>
+</body>
+</html>
